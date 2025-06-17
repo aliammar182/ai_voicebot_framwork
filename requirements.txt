@@ -1,0 +1,12 @@
+langgraph>=0.0.15
+langchain>=0.1.0
+langchain-community>=0.0.13
+langchain-ollama>=0.0.1
+openai-whisper>=20231117
+sounddevice>=0.4.6
+numpy>=1.24.0
+python-dotenv>=1.0.0
+pydub>=0.25.1
+elevenlabs>=2.3.0
+pyaudio>=0.2.13
+scipy>=1.15.3
