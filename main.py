@@ -7,6 +7,7 @@ import whisper
 from dotenv import load_dotenv
 from langchain_ollama import ChatOllama
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
+from langchain.memory import ConversationBufferWindowMemory
 from langgraph.graph import StateGraph
 from typing import TypedDict, Annotated, Sequence
 from pydub import AudioSegment
@@ -50,13 +51,26 @@ Speak in a natural, conversational tone. Be understanding of non-native English 
 and maintain context from previous conversations. Keep responses concise and engaging.
 """
         )
+        # Initialize conversation memory with window of 3 conversations
+        self.memory = ConversationBufferWindowMemory(
+            k=3,
+            memory_key="chat_history",
+            return_messages=True
+        )
         self.workflow = self._create_workflow()
 
     def _create_workflow(self):
         def generate_node(state: ConversationState) -> ConversationState:
-            msgs = [self.system_message] + state["messages"]
+            # Get chat history from memory
+            chat_history = self.memory.load_memory_variables({})["chat_history"]
+            msgs = [self.system_message] + chat_history + state["messages"]
             ai_msg: AIMessage = self.chat_model.invoke(msgs)
             print(f"Debug: Ollama reply content: {ai_msg.content}")
+            # Save the interaction to memory
+            self.memory.save_context(
+                {"input": state["messages"][-1].content},
+                {"output": ai_msg.content}
+            )
             state["messages"].append(ai_msg)
             state["next"] = "should_continue"
             return state
