@@ -1,99 +1,116 @@
-# Voice AI Bot Framework
+# Voice AI Chatbot
 
-A powerful voice-based AI chatbot framework that combines speech recognition, natural language processing, and text-to-speech capabilities. This project serves as a starting framework for building voice-enabled AI applications.
+A voice-enabled chatbot that uses speech recognition, LLM for responses, and text-to-speech for natural conversation.
 
 ## Features
 
-- 🎤 Real-time voice recording and transcription using OpenAI's Whisper
-- 🤖 Natural language processing powered by LangChain and Ollama
-- 🗣️ High-quality text-to-speech synthesis using ElevenLabs
-- 🔄 Conversational memory and context management with LangGraph
-- 🎯 Modular and extensible architecture
+- Real-time voice input using sounddevice
+- Speech-to-text using OpenAI's Whisper
+- LLM-powered responses using Ollama
+- Natural voice output using ElevenLabs
+- Conversation memory with context
+- Debug logging for monitoring interactions
 
 ## Prerequisites
 
-- Python 3.8 or higher
-- [Ollama](https://ollama.ai/) installed and running locally
+- Python 3.8+
+- Ollama installed and running locally
 - ElevenLabs API key
-- PyAudio (for audio input/output)
+- Virtual environment (recommended)
 
 ## Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/voice-ai-bot.git
-cd voice-ai-bot
+git clone <repository-url>
+cd voice_ai_bot
 ```
 
 2. Create and activate a virtual environment:
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+# On Windows
+.venv\Scripts\activate
+# On Unix/MacOS
+source .venv/bin/activate
 ```
 
-3. Install dependencies using uv:
+3. Install dependencies:
 ```bash
-uv pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-4. Create a `.env` file in the project root with your API keys:
+4. Create a `.env` file with your API keys:
 ```
-ELEVENLABS_API_KEY=your_elevenlabs_api_key
-ELEVENLABS_VOICE_ID=your_preferred_voice_id
+ELEVENLABS_API_KEY=your_api_key_here
+ELEVENLABS_VOICE_ID=your_voice_id_here  # Optional, defaults to a specific voice
+```
+
+## Model Options
+
+The chatbot supports different LLM models through Ollama:
+
+1. **deepseek-r1:7b** (Recommended)
+   - Better quality responses
+   - Includes thinking process for more coherent answers
+   - Requires more system resources
+   - Minimum 16GB RAM recommended
+
+2. **tinyllama** (Alternative)
+   - Lighter weight model
+   - Faster responses
+   - Suitable for low-end systems
+   - Minimum 8GB RAM recommended
+
+To switch models, modify the `model` parameter in `main.py`:
+```python
+self.chat_model = ChatOllama(
+    model="deepseek-r1:7b",  # or "tinyllama"
+    temperature=0.5,
+    num_predict=-1,  # or 128 for tinyllama
+    base_url="http://localhost:11434"
+)
 ```
 
 ## Usage
 
-1. Ensure Ollama is running locally (default port: 11434)
-2. Run the bot:
+1. Start Ollama server:
+```bash
+ollama serve
+```
+
+2. Run the chatbot:
 ```bash
 python main.py
 ```
 
-3. Press Enter to start recording, and press Enter again to stop
-4. The bot will transcribe your speech, process it, and respond with voice
+3. Press Enter to start recording, and Enter again to stop.
 
-## Model Options
+## Features
 
-### Ollama Models
-The default configuration uses the `tinyllama` model, but you can use any model available in Ollama for better performance:
-- `llama2` - Better performance but requires more resources
-- `mistral` - Good balance of performance and resource usage
-- `codellama` - Specialized for code-related conversations
-- `neural-chat` - Optimized for chat interactions
+- **Voice Input**: Records your voice and converts it to text
+- **LLM Processing**: Generates contextual responses
+- **Voice Output**: Converts responses to natural speech
+- **Conversation Memory**: Maintains context of last 3 interactions
+- **Debug Logging**: Shows detailed information about the conversation flow
 
-To use a different model, modify the `model` parameter in the `ChatOllama` initialization in `main.py`.
+## Notes
 
-### Speech Recognition Options
-While the default implementation uses OpenAI's Whisper, you can modify the code to use Google's Live Transcription for faster response times:
-1. Add `google-cloud-speech` to requirements.txt
-2. Set up Google Cloud credentials
-3. Modify the `transcribe_audio` method to use Google's Speech-to-Text API
+- The chatbot maintains a window of the last 3 messages for context
+- Debug output shows the full conversation flow
+- ElevenLabs voice can be customized through the API key
+- Model responses are cleaned to remove thinking process from output
 
-## Architecture
+## Troubleshooting
 
-- **Voice Input**: Uses `sounddevice` for audio recording
-- **Speech Recognition**: OpenAI's Whisper model for accurate transcription
-- **Language Processing**: 
-  - LangChain for conversation management
-  - Ollama (tinyllama model) for local LLM processing
-  - LangGraph for workflow management and state handling
-- **Voice Output**: ElevenLabs for natural-sounding speech synthesis
-
-## Memory Usage
-
-The bot maintains conversation context through LangGraph's state management system, which stores:
-- Previous messages in the conversation
-- System prompts and context
-- Conversation flow state
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+- If you get memory errors, try using the tinyllama model
+- Ensure Ollama server is running before starting the chatbot
+- Check your ElevenLabs API key if voice output isn't working
+- Verify your microphone is properly connected and configured
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+[Your License Here]
 
 ## Acknowledgments
 
