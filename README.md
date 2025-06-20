@@ -2,6 +2,8 @@
 
 A voice-enabled chatbot that uses speech recognition, LLM for responses, and text-to-speech for natural conversation.
 
+This project also leverages OpenAI and audio chunking for near real-time transcription, enabling faster and more responsive voice interactions. If your system can handle fast responses from the deepseek model, you can apply similar chunking logic in `main.py` for even smoother real-time experiences.
+
 ## Features
 
 - Real-time voice input using sounddevice
